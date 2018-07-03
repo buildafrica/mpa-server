@@ -1,5 +1,5 @@
 from rest_framework import serializers 
-from users.models import *
+from .models import *
 from django.contrib.auth import get_user_model
 
 class UserLimitedSerializer(serializers.ModelSerializer):
@@ -11,8 +11,7 @@ class UserLimitedSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # avatar = serializers.ReadOnlyField(source='get_avatar')
-    bg_avatar= serializers.ReadOnlyField(source='get_bg_avatar')
+    avatar = serializers.URLField(source='get_dp_url')
     full_name = serializers.ReadOnlyField(source='get_full_name')
     auth_token = serializers.CharField(max_length=500, read_only=True)
  
@@ -20,35 +19,25 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ('id', 'auth_token', 'email',
                   'first_name', 'last_name', 'full_name',
-                #   'avatar',
-                  'country',
-                #   'location',
+                  'name_of_organisation',
                   'phone_number',
+                   'phone_number1',
                    'created',
                    'is_legal',
-                   'bg_avatar',
-                #    'date_of_birth',
-                ) 
+                    'avatar',
+                  ) 
 
 
-class UserAuthSerializer(serializers.ModelSerializer):
-    auth_token = serializers.CharField(max_length=500, read_only=True)
-    # avatar= serializers.ReadOnlyField(source='get_avatar')
-    bg_avatar= serializers.ReadOnlyField(source='get_bg_avatar')
-    full_name = serializers.ReadOnlyField(source='get_full_name')
+class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'auth_token', 'email',
-                  'first_name', 'last_name', 'full_name',
-                  'phone_number', 'created',
-                  'country',
-                #   'avatar',
-                  'bg_avatar',
-                #   'date_of_birth',
-                #   'location',
+        fields = ('email', 'password',
+                  'first_name', 'last_name',
+                  'phone_number',  'phone_number1',
+                  'name_of_organisation',
+                  'avatar',
                   )
-
 
 class CreateUserSerializer(serializers.ModelSerializer):
 
@@ -62,7 +51,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         Instantiate a new User instance.
         """
         # assert instance is None, 'Cannot update users with CreateUserSerializer'
-        user = PCUser(
+        user = MPAUser(
             email=attrs['email'],
             first_name=attrs['first_name'],
             last_name=attrs['last_name'],

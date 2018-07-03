@@ -1,9 +1,3 @@
-# from django.contrib import admin
-# from .models import *
-# # Register your models here.
-
-# admin.site.register(PCUser)
-
 from django.contrib import admin
 from django import forms
 from django.contrib.auth.models import Group
@@ -19,8 +13,8 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
-        model = PCUser
-        fields = ('email', 'first_name', 'last_name',)
+        model = MPAUser
+        fields = ('email', 'first_name', 'last_name', 'phone_number',)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -46,8 +40,8 @@ class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
-        model = PCUser
-        fields = ('email', 'first_name', 'last_name',)
+        model = MPAUser
+        fields = ('email', 'first_name', 'last_name', 'phone_number',)
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -61,18 +55,18 @@ class MyUserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'full_name', 'is_admin')
+    list_display = ('email', 'first_name', 'last_name', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'country', 'phone_number',)}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'name_of_organisation', 'phone_number1', 'phone_number', 'avatar' )}),
         ('Permissions', {'fields': ('is_admin', 'is_active','is_legal')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2')}
+            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'password1', 'password2')}
         ),
     )
     search_fields = ('email',)
@@ -80,10 +74,10 @@ class MyUserAdmin(UserAdmin):
     filter_horizontal = ()
 
     def full_name(self, obj):
-        return ("{0} {1}".format(obj.first_name.encode("utf8"), obj.last_name.encode("utf8"))).title()
+        return ("{0} {1}".format(obj.first_name.encode("utf8"), obj. last_name.encode("utf8"))).title()
 
 # Now register the new UserAdmin...
-admin.site.register(PCUser, MyUserAdmin)
+admin.site.register(MPAUser, MyUserAdmin)
 
 # ... and, since we're not using Django's builtin permissions,
 # unregister the Group model from contacts.
